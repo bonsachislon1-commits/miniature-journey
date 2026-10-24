@@ -4,80 +4,310 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>chizzles,ai</title>
+  <title>Chizzles,AI</title>
   <style>
     * { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f0fff4;
-      color: #173b2a;
+      background: #101711;
+      color: #f3fff3;
     }
-    header {
-      background: #087f45;
-      color: white;
-      padding: 22px;
-      text-align: center;
-    }
-    main {
-      max-width: 700px;
-      margin: 45px auto;
-      padding: 24px;
-    }
-    .panel {
-      background: white;
-      padding: 24px;
-      border-radius: 18px;
-      box-shadow: 0 5px 20px #17472b18;
-    }
-    textarea {
-      width: 100%;
-      min-height: 110px;
-      padding: 12px;
-      border: 1px solid #a6cbb3;
-      border-radius: 10px;
-      font: inherit;
-    }
+    button, input, textarea { font: inherit; }
     button {
-      margin-top: 12px;
-      padding: 12px 18px;
-      background: #087f45;
-      color: white;
+      cursor: pointer;
       border: 0;
       border-radius: 10px;
-      cursor: pointer;
+      padding: 11px 14px;
     }
-    #answer {
+    .app { display: flex; min-height: 100vh; }
+    aside {
+      width: 245px;
+      padding: 20px 14px;
+      background: #17251a;
+      border-right: 1px solid #304633;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .logo { color: #8df5a0; font-size: 23px; font-weight: bold; }
+    .side-button {
+      background: #24372a;
+      color: white;
+      text-align: left;
+      width: 100%;
+    }
+    .side-button:hover { background: #31553a; }
+    .small-title { color: #a8bdaa; font-size: 12px; margin-top: 15px; }
+    #chatList { display: flex; flex-direction: column; gap: 7px; }
+    .chat-item {
+      background: transparent;
+      color: #d9e8db;
+      text-align: left;
+      overflow-wrap: anywhere;
+    }
+    .account { margin-top: auto; }
+    main {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      padding: 18px 24px;
+      border-bottom: 1px solid #304633;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .green { background: #78e68b; color: #102014; font-weight: bold; }
+    .outline { background: transparent; color: white; border: 1px solid #527358; }
+    #messages {
+      width: min(760px, 100%);
+      margin: auto;
+      padding: 28px 20px;
+      flex: 1;
+    }
+    .welcome { text-align: center; margin: 65px 0 35px; }
+    .welcome h1 { font-size: clamp(30px, 5vw, 46px); }
+    .welcome span { color: #8df5a0; }
+    .message {
+      background: #203126;
+      padding: 14px;
+      border-radius: 14px;
+      margin: 12px 0;
       white-space: pre-wrap;
-      line-height: 1.5;
+      overflow-wrap: anywhere;
+    }
+    .user { background: #285437; }
+    .composer {
+      width: min(760px, 100%);
+      margin: 0 auto;
+      padding: 16px 20px 26px;
+    }
+    .input-row { display: flex; gap: 9px; }
+    input, textarea {
+      background: #1c2b20;
+      color: white;
+      border: 1px solid #46614a;
+      border-radius: 10px;
+      padding: 13px;
+      width: 100%;
+    }
+    .notice { color: #b8c9bb; font-size: 13px; line-height: 1.5; }
+    .panel {
+      display: none;
+      width: min(700px, 100%);
+      margin: 35px auto;
+      padding: 24px;
+    }
+    .panel.active { display: block; }
+    .panel h2 { color: #8df5a0; }
+    .panel > * { margin-bottom: 13px; }
+    @media (max-width: 620px) {
+      aside { width: 72px; padding: 14px 8px; }
+      .logo { font-size: 13px; overflow-wrap: anywhere; }
+      .side-button { padding: 10px 5px; font-size: 11px; text-align: center; }
+      .small-title, #chatList { display: none; }
+      header { padding: 14px 10px; }
+      .account button { font-size: 10px; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>chizzles,ai 🌿</h1>
-    <p>Your friendly AI helper</p>
-  </header>
-  <main>
-    <div class="panel">
-      <h2>What can I help you with?</h2>
-      <p>Ask a question to get started.</p>
-      <textarea id="question" placeholder="Type your question here..."></textarea>
-      <button onclick="askQuestion()">Ask a question</button>
-      <p id="answer">Your answer will appear here.</p>
+<div class="app">
+  <aside>
+    <div class="logo">Chizzles,AI 💚</div>
+    <button class="side-button" onclick="newChat()">＋ New Chat</button>
+    <button class="side-button" onclick="showPanel('chats')">▤ Saved Chats</button>
+    <button class="side-button" onclick="showPanel('images')">🎨 Create Images</button>
+    <button class="side-button" onclick="showPanel('account')">👤 Account</button>
+    <div class="small-title">YOUR CHATS</div>
+    <div id="chatList"></div>
+    <div class="account">
+      <button class="side-button" onclick="showPanel('account')">⚙️ Settings</button>
     </div>
+  </aside>
+
+  <main>
+    <header>
+      <strong>What can we create today?</strong>
+      <button class="outline" onclick="showPanel('account')">Sign up / Log in</button>
+    </header>
+
+    <section id="messages">
+      <div class="welcome" id="welcome">
+        <h1>Welcome to <span>Chizzles,AI</span></h1>
+        <p>Your ideas start here. Ask a question or create something new.</p>
+      </div>
+      <div id="messageList"></div>
+    </section>
+
+    <section class="composer" id="composer">
+      <div class="input-row">
+        <input id="question" placeholder="Ask Chizzles,AI anything..."
+          onkeydown="if(event.key==='Enter') sendMessage()">
+        <button class="green" onclick="sendMessage()">Send</button>
+      </div>
+      <p class="notice">AI answers will work after the secure AI server is connected.</p>
+    </section>
+
+    <section class="panel" id="chats">
+      <h2>💾 Saved Chats</h2>
+      <p>Your chats saved in this browser appear in the sidebar.</p>
+      <div id="savedList"></div>
+      <button class="outline" onclick="backToChat()">Back to chat</button>
+    </section>
+
+    <section class="panel" id="images">
+      <h2>🎨 AI Image Creator</h2>
+      <p>Describe the picture you want Chizzles,AI to create.</p>
+      <textarea id="imagePrompt" rows="4"
+        placeholder="Example: a glossy green and blue dragon under the stars"></textarea>
+      <button class="green" onclick="generateImage()">Generate Image</button>
+      <p id="imageStatus" class="notice">
+        Image generation needs to be connected to a secure image-generation service.
+      </p>
+      <button class="outline" onclick="backToChat()">Back to chat</button>
+    </section>
+
+    <section class="panel" id="account">
+      <h2>👤 Your Chizzles,AI Account</h2>
+      <p>Sign-up and login will be enabled when we connect a secure account service.</p>
+      <input placeholder="Email address" type="email" disabled>
+      <input placeholder="Password" type="password" disabled>
+      <button class="green" onclick="alert('Account setup comes next!')">
+        Account setup coming next
+      </button>
+      <p class="notice">Do not enter or send passwords until secure authentication is connected.</p>
+      <button class="outline" onclick="backToChat()">Back to chat</button>
+    </section>
   </main>
-  <script>
-    function askQuestion() {
-      const question = document.getElementById('question').value.trim();
-      const answer = document.getElementById('answer');
-      if (!question) {
-        answer.textContent = 'Please type a question first!';
-        return;
-      }
-      answer.textContent =
-        'Thanks for your question! 🌿 The AI answering service is not connected yet. We will add that next.';
+</div>
+
+<script>
+  let chats = JSON.parse(localStorage.getItem("chizzlesChats") || "[]");
+  let currentChat = null;
+
+  function saveChats() {
+    localStorage.setItem("chizzlesChats", JSON.stringify(chats));
+    renderChats();
+  }
+
+  function newChat() {
+    currentChat = {
+      id: Date.now(),
+      title: "New Chat",
+      messages: []
+    };
+    chats.unshift(currentChat);
+    saveChats();
+    backToChat();
+  }
+
+  function sendMessage() {
+    const input = document.getElementById("question");
+    const text = input.value.trim();
+    if (!text) return;
+
+    if (!currentChat) newChat();
+
+    currentChat.messages.push({ text: text, sender: "user" });
+    if (currentChat.title === "New Chat") {
+      currentChat.title = text.slice(0, 28);
     }
-  </script>
+
+    currentChat.messages.push({
+      text: "Your message is saved! Connect the secure AI server to receive a real AI answer.",
+      sender: "ai"
+    });
+
+    input.value = "";
+    saveChats();
+    renderMessages();
+  }
+
+  function renderMessages() {
+    document.getElementById("welcome").style.display =
+      currentChat && currentChat.messages.length ? "none" : "block";
+
+    const list = document.getElementById("messageList");
+    list.innerHTML = "";
+
+    if (!currentChat) return;
+
+    currentChat.messages.forEach(message => {
+      const div = document.createElement("div");
+      div.className = "message" +
+        (message.sender === "user" ? " user" : "");
+      div.textContent = message.text;
+      list.appendChild(div);
+    });
+  }
+
+  function renderChats() {
+    const list = document.getElementById("chatList");
+    const saved = document.getElementById("savedList");
+    list.innerHTML = "";
+    saved.innerHTML = "";
+
+    chats.forEach(chat => {
+      const button = document.createElement("button");
+      button.className = "chat-item";
+      button.textContent = chat.title;
+      button.onclick = () => openChat(chat.id);
+      list.appendChild(button);
+
+      const savedButton = document.createElement("button");
+      savedButton.className = "side-button";
+      savedButton.textContent = "💬 " + chat.title;
+      savedButton.onclick = () => openChat(chat.id);
+      saved.appendChild(savedButton);
+    });
+  }
+
+  function openChat(id) {
+    currentChat = chats.find(chat => chat.id === id);
+    backToChat();
+    renderMessages();
+  }
+
+  function showPanel(id) {
+    document.getElementById("messages").style.display = "none";
+    document.getElementById("composer").style.display = "none";
+    document.querySelectorAll(".panel").forEach(panel => {
+      panel.classList.remove("active");
+    });
+    document.getElementById(id).classList.add("active");
+    if (id === "chats") renderChats();
+  }
+
+  function backToChat() {
+    document.querySelectorAll(".panel").forEach(panel => {
+      panel.classList.remove("active");
+    });
+    document.getElementById("messages").style.display = "block";
+    document.getElementById("composer").style.display = "block";
+    renderMessages();
+  }
+
+  function generateImage() {
+    const prompt = document.getElementById("imagePrompt").value.trim();
+    const status = document.getElementById("imageStatus");
+
+    if (!prompt) {
+      status.textContent = "Please describe the picture you want first.";
+      return;
+    }
+
+    status.textContent =
+      "Your prompt is ready! Connect the secure image-generation server to create the actual picture.";
+  }
+
+  renderChats();
+  renderMessages();
+</script>
 </body>
 </html>
