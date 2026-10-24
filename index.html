@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>chizzles,ai</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f0fff4;
+      color: #173b2a;
+    }
+    header {
+      background: #087f45;
+      color: white;
+      padding: 22px;
+      text-align: center;
+    }
+    main {
+      max-width: 700px;
+      margin: 45px auto;
+      padding: 24px;
+    }
+    .panel {
+      background: white;
+      padding: 24px;
+      border-radius: 18px;
+      box-shadow: 0 5px 20px #17472b18;
+    }
+    textarea {
+      width: 100%;
+      min-height: 110px;
+      padding: 12px;
+      border: 1px solid #a6cbb3;
+      border-radius: 10px;
+      font: inherit;
+    }
+    button {
+      margin-top: 12px;
+      padding: 12px 18px;
+      background: #087f45;
+      color: white;
+      border: 0;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    #answer {
+      white-space: pre-wrap;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>chizzles,ai 🌿</h1>
+    <p>Your friendly AI helper</p>
+  </header>
+  <main>
+    <div class="panel">
+      <h2>What can I help you with?</h2>
+      <p>Ask a question to get started.</p>
+      <textarea id="question" placeholder="Type your question here..."></textarea>
+      <button onclick="askQuestion()">Ask a question</button>
+      <p id="answer">Your answer will appear here.</p>
+    </div>
+  </main>
+  <script>
+    function askQuestion() {
+      const question = document.getElementById('question').value.trim();
+      const answer = document.getElementById('answer');
+      if (!question) {
+        answer.textContent = 'Please type a question first!';
+        return;
+      }
+      answer.textContent =
+        'Thanks for your question! 🌿 The AI answering service is not connected yet. We will add that next.';
+    }
+  </script>
+</body>
+</html>
